@@ -1,13 +1,18 @@
 const electron = require('electron')
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, } = require('electron')
 
 try {
   require('electron-reloader')(module,{});
 } catch (_) {}
 
+const Menu = electron.Menu
+/*隐藏electron创听的菜单栏*/
+Menu.setApplicationMenu(null)
+
 function createWindow () {   
   // 创建浏览器窗口
   const win = new BrowserWindow({
+    icon: 'logo.png',
     width: 800,
     height: 600,
     webPreferences: {
@@ -19,13 +24,14 @@ function createWindow () {
   win.loadFile('index.html')
 
   // 打开开发者工具
-  win.webContents.openDevTools()
+  win.webContents.closeDevTools()
 }
 
 // Electron会在初始化完成并且准备好创建浏览器窗口时调用这个方法
 // 部分 API 在 ready 事件触发后才能使用。
 // app.whenReady().then(createWindow)
 app.on('ready', createWindow)
+
 
 //当所有窗口都被关闭后退出
 app.on('window-all-closed', () => {
@@ -41,6 +47,12 @@ app.on('activate', () => {
   // 通常在应用程序中重新创建一个窗口。
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow()
+  }
+  const { Menu } = require('electron');
+  Menu.setApplicationMenu(null);
+  // hide menu for Mac 
+  if (process.platform !== 'darwin') {
+    app.dock.hide();
   }
 })
 
