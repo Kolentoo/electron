@@ -24,7 +24,8 @@ function createWindow () {
 
 // Electron会在初始化完成并且准备好创建浏览器窗口时调用这个方法
 // 部分 API 在 ready 事件触发后才能使用。
-app.whenReady().then(createWindow)
+// app.whenReady().then(createWindow)
+app.on('ready', createWindow)
 
 //当所有窗口都被关闭后退出
 app.on('window-all-closed', () => {

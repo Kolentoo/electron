@@ -13,21 +13,60 @@
       <div class="kol-con">
         <div class="login-box">
           <div class="input-box">
-            <input type="text" placeholder="请输入用户名">
+            <input type="text" placeholder="请输入用户名" id="user">
           </div>
           <div class="input-box">
-            <input type="passowrd" placeholder="请输入密码">
+            <input type="password" placeholder="请输入密码" id="psd">
           </div>
           <p class="go pointer" id="login">登 录</p>
         </div>
       </div>
     </div>
+    <div class="website"><a href="http://kolento.club/#/home" target="_blank">关于Kolento</a></div>
+    <div class="pop">
+      <p class="msg"></p>
+    </div>
    <script>
       window.onload=function(){
         document.getElementById('login').onclick = function() {  
-          window.location.href='./chart.html'
+          Login()
         } 
-      }     
+
+
+        document.getElementById('psd').onkeyup = function(e) {
+          if(e.keyCode == 13){
+            Login();
+          }
+          
+        }
+      }   
+      
+      
+      function Login(){
+        let user = document.getElementById('user');
+          let psd = document.getElementById('psd');
+          if(user.value===''){
+            let userNotice = new Notification('消息提示', {
+              body: '请输入用户名'
+            })
+
+          }else{
+            if(psd.value===''){
+              let psdNotice = new Notification('消息提示', {
+                body: '请输入密码'
+              })
+            }else{
+              if(psd.value==='kolento'){
+                localStorage.setItem('yourName',user.value);
+                window.location.href='./chart.html'
+              }else{
+                let errNotice = new Notification('消息提示', {
+                  body: '密码错误'
+                })
+              }
+            }
+          }
+      }
 
   
 

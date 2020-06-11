@@ -19,32 +19,136 @@
             <p class="goback create-btn">退出聊天</p>
           </div>
         </div>
-        <div class="send-msg">
-          <textarea rows="3"  id="text" class="words" placeholder="请输入"></textarea>
-          <p id="btn" class="send hide">发送</p> 
+
+        <div class="send-msg" id="send-msg">
+          <div class="bottom-con">
+            <div class="emoji-box" id="emoji-box">
+              <div class="emoji">
+                <span class="s1">😀</span>
+                <span class="s1">😁</span>
+                <span class="s1">😂</span>
+                <span class="s1">😃</span>
+                <span class="s1">😅</span>
+                <span class="s1">😄</span>
+                <span class="s1">😆</span>
+                <span class="s1">😉</span>
+                <span class="s1">😊</span>
+                <span class="s1">😎</span>
+                <span class="s1">😍</span>
+                <span class="s1">😘</span>
+                <span class="s1">😗</span>
+                <span class="s1">😚</span>
+                <span class="s1">😐</span>
+                <span class="s1">😏</span>
+                <span class="s1">😣</span>
+                <span class="s1">😥</span>
+                <span class="s1">😶</span>
+                <span class="s1">😑</span>
+                <span class="s1">😫</span>
+                <span class="s1">😯</span>
+                <span class="s1">😒</span>
+                <span class="s1">😝</span>
+                <span class="s1">😜</span>
+                <span class="s1">😌</span>
+                <span class="s1">😤</span>
+                <span class="s1">😷</span>
+                <span class="s1">😓</span>
+                <span class="s1">😵</span>
+                <span class="s1">😳</span>
+                <span class="s1">😡</span>
+                <span class="s1">😠</span>
+                <span class="s1">😱</span>
+                <span class="s1">😰</span>
+                <span class="s1">😬</span>
+                <span class="s1">😨</span>
+                <span class="s1">😧</span>
+                <span class="s1">😭</span>
+                <span class="s1">🔪</span>
+                <span class="s1">⚽</span>
+                <span class="s1">⚡</span>
+                <span class="s1">⭐</span>
+                <span class="s1">🌝</span>
+                <span class="s1">🌼</span>
+                <span class="s1">👀</span>
+                <span class="s1">👅</span>
+                <span class="s1">💎</span>
+                <span class="s1">❓</span>
+                <span class="s1">🚩</span>
+                <span class="s1">😈</span>
+                <span class="s1">🚽</span>
+                <span class="s1">🌜</span>
+                <span class="s1">🚲</span>
+                <span class="s1">✈</span>
+                <span class="s1">🚀</span>
+                <span class="s1">👿</span>
+              </div>
+            </div>
+            <div class="tools-box">
+              <p class="emoji choose" id="choose">选择表情</p>
+            </div>
+            <div class="msg-box">
+              <textarea rows="3"  id="text" class="words" placeholder="请输入" ></textarea>
+              <p id="btn" class="send hide">发送</p> 
+            </div>
+          </div>
         </div>
         <div id="container">
 
         </div>
       </div>
     </div>
+    <p class="tips" id="tips">群聊请先创建自定义昵称</p>
 
     <script>
     window.onload=function(){
+      let choose = document.getElementById('choose');
+      let emojiBox = document.getElementById('emoji-box');
+      choose.onclick=function(){
+        if(choose.innerHTML==='选择表情'){
+          emojiBox.classList.add('emoji-on');
+          choose.innerHTML='退出选择'
+        }else{
+          emojiBox.classList.remove('emoji-on');
+          choose.innerHTML='选择表情'
+        }
+      }
+
+      let s1 = document.querySelectorAll('.s1');
+      let textarea = document.getElementById('text');
+      let currentValue = textarea.value;
+      s1.forEach((current,index)=>{
+        current.onclick=function(){
+          console.log(current)
+          console.log(current.innerHTML)
+          var choosed = current.innerHTML;
+          let newValue = currentValue +' '+choosed;
+          textarea.value=current.innerHTML;
+          emojiBox.classList.remove('emoji-on');
+          choose.innerHTML='选择表情'
+        }
+      })
+
+
+
+      let yourName = localStorage.getItem('yourName');
+      document.getElementById('name').value=yourName;
+
       document.querySelector('.goback').onclick=function(){
-        console.log(1)
         window.location.href='./index.html'
       }
 
-
-
-        var ws=null;
+      var ws=null;
         
       document.getElementById('setname').onclick = function() {
          var name = document.getElementById('name').value;
-          if(name === '')return console.log("名字为空");
-           
-          ws = new WebSocket('ws://localhost:8000');
+          if(name === ''){
+            let nameNotice = new Notification('消息提示', {
+              body: '请先创建昵称'
+            })
+          }
+          document.getElementById('tips').classList.add('tips-off');
+          document.getElementById('send-msg').classList.add('send-on');
+          ws = new WebSocket('ws://kolento.club:8001');
            
           //在建立连接时会触发
           ws.onopen = function(){
@@ -67,29 +171,43 @@
               var con = document.getElementById('container');
             
               //insertBefore(要插入的内容，要插入的位置之前)
+              console.log(e.data)
             con.insertBefore(createChatPanel(JSON.parse(e.data)),con.children[0]);
           }
           //将加入房间按钮设置不可用（只能加入一次）
-          document.getElementById('setname').setAttribute('disabled',true);
+          document.getElementById('setname').classList.add('hide');
       }
 
       function createChatPanel(data) {
         var name = data.name;
         var text = data.text;
+        let currentName = localStorage.getItem('yourName');
 
         var div = document.createElement('div');
-        var span1= document.createElement('span1');
-        var span2= document.createElement('span2');
+        var span1= document.createElement('p');
+        var span2= document.createElement('p');
+        name==currentName?span1.classList.add('me'):'';
+        name==currentName?span2.classList.add('me'):'';
 
-        span1.innerHTML = name + ' ' + new Date().format("yyyy-MM-dd hh:mm:ss");
+        span1.innerHTML = name+' '+new Date().format("yyyy-MM-dd hh:mm:ss");
         span2.innerHTML = text;
 
-        span1.style.color = '#fff';
         span2.style.fontWeight = '900';
 
         div.appendChild(span1);
-        div.appendChild(document.createElement('br'));
         div.appendChild(span2);
+        if(name==currentName){
+          //是我自己
+        }else if(name=='Server'){
+          let userNotice = new Notification(`加入通知`, {
+            body: text
+          })
+        }else{
+          let userNotice = new Notification(`${name}发来一条消息`, {
+            body: text
+          })
+        }
+
         return div;
       }
       //发送消息

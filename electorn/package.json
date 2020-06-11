@@ -1,11 +1,12 @@
 {
   "name": "electorn",
   "version": "1.0.0",
-  "description": "",
+  "description": "chartRoom",
   "main": "index.js",
   "scripts": {
     "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "electron-packager . app --win --out ../myClient --arch=x64 --app-version=0.0.1 --electron-version=2.0.0"
   },
   "author": "kolento",
   "license": "ISC",
