@@ -25,6 +25,7 @@ function createWindow () {
 
   // 打开开发者工具
   win.webContents.closeDevTools()
+  // win.webContents.closeDevTools()
 }
 
 // Electron会在初始化完成并且准备好创建浏览器窗口时调用这个方法
